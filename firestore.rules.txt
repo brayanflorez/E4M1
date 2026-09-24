@@ -1,0 +1,34 @@
+// Reglas de seguridad de Firestore para el experimento Dictador/Ultimátum (5 rondas).
+//
+// CÓMO USARLAS: en la consola de Firebase, vayan a Firestore Database →
+// pestaña "Reglas", borren lo que haya, peguen esto, y hagan clic en "Publicar".
+//
+// Qué hacen: permiten que cualquier persona con el link lea y escriba SOLO
+// en las dos colecciones que usa esta app ("state" — una fila de espera por
+// ronda — y "pairs"), y solo con datos con la forma esperada. No exponen
+// ninguna otra información del proyecto de Firebase. No hay inicio de sesión:
+// cualquiera con el link puede participar, por lo que estas reglas son
+// intencionalmente simples — adecuadas para un ejercicio de clase de bajo
+// riesgo, no para datos sensibles.
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Un documento por ronda (queue_r1 .. queue_r5) con quién está esperando pareja.
+    match /state/{queueDoc} {
+      allow read, write: if true;
+    }
+
+    // Una pareja por documento: ronda, decisiones y estado de cada juego.
+    match /pairs/{pairId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(
+        ['round','player1Code','player2Code','playerCodes','decision','accepted','status']
+      );
+      allow update: if request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['decision','accepted','status']);
+      allow delete: if true;
+    }
+  }
+}
