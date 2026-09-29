@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tablero en vivo — Dictador y Ultimátum</title>
+  <title>Tablero en vivo — Experimento 4</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
     body { max-width: 1100px; margin: 0 auto; align-items: stretch; }
@@ -24,9 +24,33 @@
     th { color: var(--ink-soft); font-weight: 600; background: var(--paper); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
     tr.leader td { background: var(--accept-bg); font-weight: 700; }
     tr.leader td:first-child::before { content: "🏆 "; }
-    .actions { display: flex; gap: 10px; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
     .actions .btn { width: auto; padding: 10px 16px; font-size: 0.88rem; }
     .prize-note { font-size: 0.85rem; color: var(--ink-soft); margin: 10px 0 14px; }
+
+    /* ---- charts ---- */
+    .chart-block { background: var(--paper-raised); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); margin-bottom: 16px; }
+    .chart-block h3 { font-size: 0.95rem; margin-bottom: 4px; }
+    .chart-caption { font-size: 0.78rem; color: var(--ink-soft); margin-bottom: 10px; }
+    .bar-chart-svg { width: 100%; height: auto; display: block; }
+    .chart-empty { color: var(--ink-soft); font-size: 0.85rem; }
+
+    /* ---- printable report: hidden on screen, shown only when printing ---- */
+    #reportContainer { display: none; }
+    @media print {
+      body > *:not(#reportContainer) { display: none !important; }
+      #reportContainer { display: block !important; max-width: 100%; padding: 0; }
+      .report-question { page-break-before: always; }
+      .report-header { page-break-before: avoid; }
+      .chart-block { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+      .round-banner { box-shadow: none; border: 1px solid #ddd; }
+    }
+    .report-header { text-align: center; margin-bottom: 24px; }
+    .report-header h1 { margin-top: 6px; }
+    .report-question { margin-top: 10px; }
+    .report-stat-line { display: flex; gap: 18px; flex-wrap: wrap; font-size: 0.88rem; margin: 8px 0 18px; color: var(--ink-soft); }
+    .report-stat-line b { color: var(--ink); }
+    .report-table { margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -36,6 +60,7 @@
       <h1>Experimento 4 — Dictador y Ultimátum (5 preguntas)</h1>
     </div>
     <div class="actions">
+      <button class="btn btn-secondary" id="btnReport">Descargar informe</button>
       <button class="btn btn-secondary" id="btnExport">Descargar CSV</button>
       <button class="btn btn-secondary" id="btnReset">Reiniciar sesión</button>
     </div>
@@ -50,6 +75,8 @@
     <thead><tr><th>#</th><th>Estudiante</th><th>Preguntas jugadas</th><th>Total acumulado</th></tr></thead>
     <tbody id="leaderboardBody"></tbody>
   </table>
+
+  <div id="reportContainer"></div>
 
   <script type="module" src="dashboard.js"></script>
 </body>
