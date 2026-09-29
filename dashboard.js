@@ -1,4 +1,4 @@
-// dashboard.js — Tablero en vivo para proyectar en clase (5 rondas + tabla de posiciones).
+// dashboard.js — Tablero en vivo para proyectar en clase (5 preguntas + tabla de posiciones).
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import {
@@ -25,7 +25,7 @@ let selectedRound = 1;
 function renderRoundTabs() {
   roundTabsEl.innerHTML = ROUNDS.map((r) => `
     <button type="button" class="round-tab ${r.id === selectedRound ? "active" : ""}" data-round="${r.id}">
-      Ronda ${r.id}
+      Pregunta ${r.id}
     </button>`).join("");
   roundTabsEl.querySelectorAll(".round-tab").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -58,7 +58,7 @@ function renderRoundStats() {
       <p>${cfg.intro}</p>
     </div>
     <div class="stat-grid">
-      <div class="stat-card"><div class="num">${pairs.length}</div><div class="lbl">Parejas en esta ronda</div></div>
+      <div class="stat-card"><div class="num">${pairs.length}</div><div class="lbl">Parejas en esta pregunta</div></div>
       <div class="stat-card"><div class="num">${decided.length}</div><div class="lbl">Decisiones tomadas</div></div>
       <div class="stat-card"><div class="num">${avgDecision === null ? "—" : fmt(Math.round(avgDecision))}</div><div class="lbl">${decisionLabel}</div></div>
       ${acceptHtml}
@@ -109,7 +109,7 @@ onSnapshot(collection(db, "pairs"), (snap) => {
 // ---- Reset session ----
 document.getElementById("btnReset").addEventListener("click", async () => {
   const ok = confirm(
-    "Esto borra TODAS las parejas de las 5 rondas y las filas de espera actuales — úselo solo para " +
+    "Esto borra TODAS las parejas de las 5 preguntas y las filas de espera actuales — úselo solo para " +
     "empezar una sesión nueva (otro grupo o semestre). ¿Continuar?"
   );
   if (!ok) return;
@@ -124,16 +124,38 @@ document.getElementById("btnReset").addEventListener("click", async () => {
 
 // ---- CSV export ----
 document.getElementById("btnExport").addEventListener("click", () => {
-  const headers = ["round", "pair_id", "player1_code", "player1_name", "player2_code", "player2_name", "decision", "accepted", "status", "player1_earn", "player2_earn"];
-  const rows = latestPairs.map((p) => {
-    const cfg = getRound(p.round);
-    const e = cfg ? computeEarnings(p, cfg) : { p1: "", p2: "" };
-    return [
-      p.round, p.id, p.player1Code, p.player1Name, p.player2Code, p.player2Name,
-      p.decision ?? "", p.accepted === true ? 1 : p.accepted === false ? 0 : "", p.status,
-      e.p1 ?? "", e.p2 ?? "",
-    ];
-  });
+  const headers = [
+    "pregunta", "tipo_pregunta", "monto_pregunta",
+    "codigo_estudiante", "nombre_estudiante", "rol",
+    "codigo_companero", "nombre_companero",
+    "decision_jugador1", "acepto", "mi_ganancia", "ganancia_companero",
+    "estado", "pair_id",
+  ];
+  const rows = [];
+  for (const pair of latestPairs) {
+    const cfg = getRound(pair.round);
+    if (!cfg) continue;
+    const e = computeEarnings(pair, cfg);
+    const tipo = `${cfg.type === "dictator" ? "Dictador" : "Ultimátum"} (${cfg.frame === "take" ? "quitar" : "dar"})`;
+    const acepto = cfg.type !== "ultimatum" ? "N/A" : (pair.accepted === true ? "Sí" : pair.accepted === false ? "No" : "");
+    // Row for player 1 (proposer)
+    rows.push([
+      pair.round, tipo, cfg.pot,
+      pair.player1Code, pair.player1Name, "Jugador 1 (propone)",
+      pair.player2Code, pair.player2Name,
+      pair.decision ?? "", acepto, e.p1 ?? "", e.p2 ?? "",
+      pair.status, pair.id,
+    ]);
+    // Row for player 2 (responder / recipient)
+    rows.push([
+      pair.round, tipo, cfg.pot,
+      pair.player2Code, pair.player2Name, "Jugador 2 (responde)",
+      pair.player1Code, pair.player1Name,
+      pair.decision ?? "", acepto, e.p2 ?? "", e.p1 ?? "",
+      pair.status, pair.id,
+    ]);
+  }
+  rows.sort((a, b) => (a[3] > b[3] ? 1 : a[3] < b[3] ? -1 : a[0] - b[0]));
   const csv = [headers, ...rows]
     .map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(","))
     .join("\n");
@@ -141,7 +163,7 @@ document.getElementById("btnExport").addEventListener("click", () => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `dg_ug_resultados_${new Date().toISOString().slice(0, 10)}.csv`;
+  a.download = `dg_ug_respuestas_completas_${new Date().toISOString().slice(0, 10)}.csv`;
   a.click();
   URL.revokeObjectURL(url);
 });

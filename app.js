@@ -1,4 +1,4 @@
-// app.js — Dictador y Ultimátum: serie de 5 rondas, app en vivo para estudiantes.
+// app.js — Dictador y Ultimátum: serie de 5 preguntas, app en vivo para estudiantes.
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import {
@@ -75,9 +75,9 @@ function wireAmountGrid(onPick) {
 function screenJoin(isReplay) {
   render(`
     <div class="ticket">
-      <div class="eyebrow">EXPERIMENTO · MICROECONOMÍA</div>
+      <div class="eyebrow">EXPERIMENTO 4 · INTRODUCCIÓN A LA MICROECONOMÍA</div>
       <h1>Dictador y Ultimátum</h1>
-      <p>Va a jugar <b>5 rondas</b> de reparto de dinero experimental, cada una con un compañero anónimo distinto y reglas que van cambiando. Al final del curso, quien más pesos experimentales acumule gana el equivalente en pesos reales.</p>
+      <p>Va a jugar <b>5 preguntas</b> de reparto de dinero experimental, cada una con un compañero anónimo distinto y reglas que van cambiando. Al final del curso, quien más pesos experimentales acumule gana el equivalente en pesos reales.</p>
       <div class="field">
         <label for="inName">Nombre completo</label>
         <input id="inName" type="text" autocomplete="name" placeholder="Ej. María Torres" />
@@ -90,7 +90,7 @@ function screenJoin(isReplay) {
       <div class="err" id="joinErr" style="display:none"></div>
       <button class="btn btn-primary" id="btnJoin">Comenzar</button>
     </div>
-    <p class="footer-note">Sus respuestas son anónimas para el resto del curso. Nadie sabrá con quién quedó emparejado en cada ronda.</p>
+    <p class="footer-note">Sus respuestas son anónimas para el resto del curso. Nadie sabrá con quién quedó emparejado en cada pregunta.</p>
   `);
   document.getElementById("btnJoin").addEventListener("click", () => {
     const name = document.getElementById("inName").value.trim();
@@ -149,7 +149,7 @@ function screenWaitingForPartner() {
     <div class="ticket">
       <div class="eyebrow">${getRound(currentRoundId).tag}</div>
       <h1>Buscando pareja...</h1>
-      <div class="status-line"><span class="pulse"></span> Esperando a que otro estudiante entre a esta ronda</div>
+      <div class="status-line"><span class="pulse"></span> Esperando a que otro estudiante entre a esta pregunta</div>
     </div>
   `);
 }
@@ -206,7 +206,7 @@ function screenDecide(pair, cfg, role) {
     <div class="ticket">
       <div class="eyebrow">${cfg.tag} · USTED DECIDE</div>
       <h1>${question}</h1>
-      <p>${cfg.type === "ultimatum" ? "Recuerde: su compañero puede rechazar esta oferta." : "Su compañero no tiene ninguna decisión que tomar en esta ronda."}</p>
+      <p>${cfg.type === "ultimatum" ? "Recuerde: su compañero puede rechazar esta oferta." : "Su compañero no tiene ninguna decisión que tomar en esta pregunta."}</p>
       ${amountOptions(cfg.pot, cfg.frame)}
       <button class="btn btn-primary" id="btnSubmit" disabled>${cfg.type === "ultimatum" ? "Enviar oferta" : "Confirmar decisión"}</button>
     </div>
@@ -278,14 +278,14 @@ function screenWaitingResponse(pair, cfg) {
 // ---------------------------------------------------------------------------
 function screenWaitPartnerDecision(cfg) {
   const msg = cfg.earned
-    ? "Su compañero está respondiendo unas preguntas para ganarse el dinero de esta ronda"
+    ? "Su compañero está respondiendo unas preguntas para ganarse el dinero de esta pregunta"
     : "Su compañero está decidiendo cómo repartir el dinero";
   render(`
     <div class="ticket">
       <div class="eyebrow">${cfg.tag}</div>
       <h1>Esperando a su compañero...</h1>
       <div class="status-line"><span class="pulse"></span> ${msg}</div>
-      <p>${cfg.type === "ultimatum" ? "En un momento le va a llegar una oferta real que usted podrá aceptar o rechazar." : "En esta ronda usted no toma ninguna decisión — solo recibe el resultado."}</p>
+      <p>${cfg.type === "ultimatum" ? "En un momento le va a llegar una oferta real que usted podrá aceptar o rechazar." : "En esta pregunta usted no toma ninguna decisión — solo recibe el resultado."}</p>
     </div>
   `);
 }
@@ -336,14 +336,14 @@ function screenRoundResult(pair, cfg, role) {
   render(`
     <div class="ticket">
       <div class="eyebrow">${cfg.tag} · RESULTADO</div>
-      <h1>${rejected ? "Oferta rechazada" : "Ronda completa"}</h1>
+      <h1>${rejected ? "Oferta rechazada" : "Pregunta completa"}</h1>
       <hr class="divider" />
-      <div class="receipt-row total"><span class="label">Usted gana en esta ronda</span><span class="value">${fmt(mine)}</span></div>
+      <div class="receipt-row total"><span class="label">Usted gana en esta pregunta</span><span class="value">${fmt(mine)}</span></div>
       <hr class="divider" />
-      <div class="receipt-row"><span class="label">Acumulado (${history.length} de ${ROUNDS.length} rondas)</span><span class="value">${fmt(runningTotal)}</span></div>
+      <div class="receipt-row"><span class="label">Acumulado (${history.length} de ${ROUNDS.length} preguntas)</span><span class="value">${fmt(runningTotal)}</span></div>
       ${isLastRound
         ? `<button class="btn btn-primary" id="btnNext" style="margin-top:16px;">Ver resultado final</button>`
-        : `<p style="margin-top:16px;">${cfg.teaserNext || ""}</p><button class="btn btn-primary" id="btnNext">Continuar a la Ronda ${cfg.id + 1}</button>`
+        : `<p style="margin-top:16px;">${cfg.teaserNext || ""}</p><button class="btn btn-primary" id="btnNext">Continuar a la Pregunta ${cfg.id + 1}</button>`
       }
     </div>
   `);
@@ -371,11 +371,11 @@ function screenFinalSummary() {
   const rows = history
     .slice()
     .sort((a, b) => a.round - b.round)
-    .map((h) => `<div class="receipt-row"><span class="label">Ronda ${h.round} — ${h.title}</span><span class="value">${fmt(h.amount)}</span></div>`)
+    .map((h) => `<div class="receipt-row"><span class="label">Pregunta ${h.round} — ${h.title}</span><span class="value">${fmt(h.amount)}</span></div>`)
     .join("");
   render(`
     <div class="ticket">
-      <div class="eyebrow">RESULTADO FINAL · 5 RONDAS</div>
+      <div class="eyebrow">RESULTADO FINAL · 5 PREGUNTAS</div>
       <h1>Su recibo completo</h1>
       <hr class="divider" />
       ${rows}
