@@ -1,4 +1,4 @@
-// app.js — Dictador y Ultimátum: serie de 5 preguntas, app en vivo para estudiantes.
+// app.js: Dictador y Ultimátum, serie de 5 preguntas, app en vivo para estudiantes.
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import {
@@ -285,7 +285,7 @@ function screenWaitPartnerDecision(cfg) {
       <div class="eyebrow">${cfg.tag}</div>
       <h1>Esperando a su compañero...</h1>
       <div class="status-line"><span class="pulse"></span> ${msg}</div>
-      <p>${cfg.type === "ultimatum" ? "En un momento le va a llegar una oferta real que usted podrá aceptar o rechazar." : "En esta pregunta usted no toma ninguna decisión — solo recibe el resultado."}</p>
+      <p>${cfg.type === "ultimatum" ? "En un momento le va a llegar una oferta real que usted podrá aceptar o rechazar." : "En esta pregunta usted no toma ninguna decisión, solo recibe el resultado."}</p>
     </div>
   `);
 }
@@ -371,7 +371,7 @@ function screenFinalSummary() {
   const rows = history
     .slice()
     .sort((a, b) => a.round - b.round)
-    .map((h) => `<div class="receipt-row"><span class="label">Pregunta ${h.round} — ${h.title}</span><span class="value">${fmt(h.amount)}</span></div>`)
+    .map((h) => `<div class="receipt-row"><span class="label">Pregunta ${h.round}: ${h.title}</span><span class="value">${fmt(h.amount)}</span></div>`)
     .join("");
   render(`
     <div class="ticket">
@@ -394,7 +394,7 @@ function screenFinalSummary() {
 }
 
 // ---------------------------------------------------------------------------
-// Boot — resumes correctly no matter where a refresh catches the student.
+// Boot: resumes correctly no matter where a refresh catches the student.
 // ---------------------------------------------------------------------------
 if (phase === "final") {
   screenFinalSummary();

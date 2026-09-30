@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tablero en vivo — Experimento 4</title>
+  <title>Tablero en vivo: Experimento 4</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
     body { max-width: 1100px; margin: 0 auto; align-items: stretch; }
@@ -23,7 +23,7 @@
     th, td { text-align: left; padding: 11px 14px; font-size: 0.9rem; border-bottom: 1px solid var(--line); }
     th { color: var(--ink-soft); font-weight: 600; background: var(--paper); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
     tr.leader td { background: var(--accept-bg); font-weight: 700; }
-    tr.leader td:first-child::before { content: "🏆 "; }
+    
     .actions { display: flex; gap: 10px; flex-wrap: wrap; }
     .actions .btn { width: auto; padding: 10px 16px; font-size: 0.88rem; }
     .prize-note { font-size: 0.85rem; color: var(--ink-soft); margin: 10px 0 14px; }
@@ -33,7 +33,13 @@
     .chart-block h3 { font-size: 0.95rem; margin-bottom: 4px; }
     .chart-caption { font-size: 0.78rem; color: var(--ink-soft); margin-bottom: 10px; }
     .bar-chart-svg { width: 100%; height: auto; display: block; }
+    .lorenz-svg { max-width: 480px; margin: 0 auto; }
     .chart-empty { color: var(--ink-soft); font-size: 0.85rem; }
+    .chart-legend { display: flex; gap: 16px; font-size: 0.78rem; color: var(--ink-soft); margin-top: 6px; flex-wrap: wrap; }
+    .chart-legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .chart-legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; font-style: normal; }
+    .round-tab.compare-tab { border-color: var(--gold); color: var(--gold-dark, #a3771f); }
+    .round-tab.compare-tab.active { background: var(--gold); border-color: var(--gold); color: #fff; }
 
     /* ---- printable report: hidden on screen, shown only when printing ---- */
     #reportContainer { display: none; }
@@ -57,7 +63,7 @@
   <div class="dash-header">
     <div>
       <div class="eyebrow">TABLERO EN VIVO</div>
-      <h1>Experimento 4 — Dictador y Ultimátum (5 preguntas)</h1>
+      <h1>Experimento 4: Dictador y Ultimátum (5 preguntas)</h1>
     </div>
     <div class="actions">
       <button class="btn btn-secondary" id="btnReport">Descargar informe</button>
@@ -70,7 +76,7 @@
   <div id="roundStats"></div>
 
   <h2>Tabla de posiciones</h2>
-  <p class="prize-note">Máximo teórico posible en las 5 preguntas: <b id="maxPossible"></b> — quien más acumule al final del curso recibe el equivalente en pesos reales.</p>
+  <p class="prize-note">Máximo teórico posible en las 5 preguntas: <b id="maxPossible"></b>. Quien más acumule al final del curso recibe el equivalente en pesos reales.</p>
   <table>
     <thead><tr><th>#</th><th>Estudiante</th><th>Preguntas jugadas</th><th>Total acumulado</th></tr></thead>
     <tbody id="leaderboardBody"></tbody>

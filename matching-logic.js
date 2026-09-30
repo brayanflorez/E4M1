@@ -3,7 +3,7 @@
 // API surface (works against real Firebase or the in-memory mock in tests).
 
 // ---------------------------------------------------------------------------
-// ROUND CONFIGURATION — the whole "story" of the session lives here. Change
+// ROUND CONFIGURATION: the whole "story" of the session lives here. Change
 // wording, pots, or add/remove rounds by editing this array; everything else
 // (matching, earnings, UI) adapts automatically.
 // ---------------------------------------------------------------------------
@@ -28,7 +28,7 @@ export const ROUNDS = [
     frame: "give",
     earned: false,
     intro: "De nuevo hay $3.000 para repartir. Usted propone el reparto, pero esta vez su compañero puede ACEPTAR o RECHAZAR su oferta. Si la rechaza, los dos se quedan con $0.",
-    teaserNext: "Pregunta 3: el dinero ya no es un regalo — parte de él ya es de su compañero...",
+    teaserNext: "Pregunta 3: el dinero ya no es un regalo, parte de él ya es de su compañero...",
   },
   {
     id: 3,
@@ -38,8 +38,8 @@ export const ROUNDS = [
     type: "dictator",
     frame: "take",
     earned: false,
-    intro: "Usted y su compañero ya tienen $1.500 pesos experimentales guardados cada uno. Usted decide cuánto le QUITA del bolsillo a su compañero — entre $0 y $1.500. Su compañero no tiene ningún voto.",
-    teaserNext: "Pregunta 4: esta vez el dinero no es gratis — hay que ganárselo primero...",
+    intro: "Usted y su compañero ya tienen $1.500 pesos experimentales guardados cada uno. Usted decide cuánto le QUITA del bolsillo a su compañero, entre $0 y $1.500. Su compañero no tiene ningún voto.",
+    teaserNext: "Pregunta 4: esta vez el dinero no es gratis, hay que ganárselo primero...",
   },
   {
     id: 4,
@@ -64,7 +64,7 @@ export const ROUNDS = [
     type: "ultimatum",
     frame: "give",
     earned: false,
-    intro: "Última pregunta, y esta vez hay $8.000 en juego — más del doble que antes. Usted propone el reparto y su compañero decide si lo acepta o lo rechaza. Si lo rechaza, los dos pierden todo.",
+    intro: "Última pregunta, y esta vez hay $8.000 en juego, más del doble que antes. Usted propone el reparto y su compañero decide si lo acepta o lo rechaza. Si lo rechaza, los dos pierden todo.",
     teaserNext: null,
   },
 ];
@@ -124,7 +124,7 @@ export async function joinQueue(fx, { code, name, round }) {
 
 /**
  * Listens for a pair to be created, for this round, that includes `code`.
- * Uses a single-field query (round only — no composite index needed) and
+ * Uses a single-field query (round only, no composite index needed) and
  * filters for `code` client-side. Calls onFound(pairId) once.
  */
 export function listenForMyPair(fx, { code, round }, onFound) {

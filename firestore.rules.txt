@@ -4,11 +4,11 @@
 // pestaña "Reglas", borren lo que haya, peguen esto, y hagan clic en "Publicar".
 //
 // Qué hacen: permiten que cualquier persona con el link lea y escriba SOLO
-// en las dos colecciones que usa esta app ("state" — una fila de espera por
-// ronda — y "pairs"), y solo con datos con la forma esperada. No exponen
+// en las dos colecciones que usa esta app ("state", una fila de espera por
+// ronda, y "pairs"), y solo con datos con la forma esperada. No exponen
 // ninguna otra información del proyecto de Firebase. No hay inicio de sesión:
 // cualquiera con el link puede participar, por lo que estas reglas son
-// intencionalmente simples — adecuadas para un ejercicio de clase de bajo
+// intencionalmente simples, adecuadas para un ejercicio de clase de bajo
 // riesgo, no para datos sensibles.
 
 rules_version = '2';
