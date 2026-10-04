@@ -267,10 +267,56 @@ function render() {
   renderLeaderboard();
 }
 
-onSnapshot(collection(db, "pairs"), (snap) => {
-  latestPairs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-  render();
+// ---------------------------------------------------------------------------
+// Acceso con contraseña. Es un filtro sencillo para que no entre cualquiera al
+// tablero: la página compara el SHA-256 de lo que se escribe contra el de la
+// contraseña, así que la contraseña no aparece escrita en el código. No es
+// seguridad fuerte (las reglas de Firestore siguen siendo abiertas).
+// Para cambiar la contraseña: calcular el SHA-256 de la nueva y pegarlo aquí.
+// ---------------------------------------------------------------------------
+const PASS_HASH = "ac52dba9fcf6a90a9cee95ce1aea5b93bddbc77ef3a7516714f6510a99f7e31a";
+
+async function sha256Hex(text) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+let liveStarted = false;
+function startLive() {
+  if (liveStarted) return;
+  liveStarted = true;
+  onSnapshot(collection(db, "pairs"), (snap) => {
+    latestPairs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    render();
+  });
+}
+
+function unlock() {
+  document.body.classList.remove("locked");
+  sessionStorage.setItem("dgug_dash_ok", "1");
+  startLive();
+}
+
+async function tryPassword() {
+  const input = document.getElementById("gatePass");
+  const err = document.getElementById("gateErr");
+  const hash = await sha256Hex(input.value.trim());
+  if (hash === PASS_HASH) {
+    err.style.display = "none";
+    unlock();
+  } else {
+    err.style.display = "block";
+    input.value = "";
+    input.focus();
+  }
+}
+
+document.getElementById("gateBtn").addEventListener("click", tryPassword);
+document.getElementById("gatePass").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") tryPassword();
 });
+
+if (sessionStorage.getItem("dgug_dash_ok") === "1") unlock();
 
 // ---------------------------------------------------------------------------
 // Reset session

@@ -41,6 +41,11 @@
     .round-tab.compare-tab { border-color: var(--gold); color: var(--gold-dark, #a3771f); }
     .round-tab.compare-tab.active { background: var(--gold); border-color: var(--gold); color: #fff; }
 
+    /* ---- pantalla de contraseña ---- */
+    #gate { display: none; }
+    body.locked #gate { display: block; }
+    body.locked > *:not(#gate) { display: none !important; }
+
     /* ---- printable report: hidden on screen, shown only when printing ---- */
     #reportContainer { display: none; }
     @media print {
@@ -59,7 +64,21 @@
     .report-table { margin-top: 10px; }
   </style>
 </head>
-<body>
+<body class="locked">
+  <div id="gate">
+    <div class="ticket" style="max-width:380px; margin:14vh auto 0;">
+      <div class="eyebrow">ACCESO RESTRINGIDO</div>
+      <h1>Tablero del profesor</h1>
+      <p>Escriba la contraseña para ver los resultados.</p>
+      <div class="field">
+        <label for="gatePass">Contraseña</label>
+        <input id="gatePass" type="password" autocomplete="off" autocapitalize="off" />
+      </div>
+      <div class="err" id="gateErr" style="display:none">Contraseña incorrecta.</div>
+      <button class="btn btn-primary" id="gateBtn">Entrar</button>
+    </div>
+  </div>
+
   <div class="dash-header">
     <div>
       <div class="eyebrow">TABLERO EN VIVO</div>
